@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuizFlow &mdash; Marketing Quiz Automation</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <div class="topbar-left">
+    <div class="logo">
+      <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      <span>QuizFlow</span>
+    </div>
+    <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle navigation">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><rect y="3" width="20" height="2" rx="1"/><rect y="9" width="20" height="2" rx="1"/><rect y="15" width="20" height="2" rx="1"/></svg>
+    </button>
+    <nav class="topbar-nav" id="topbar-nav">
+      <button class="nav-btn active" data-view="dashboard">Dashboard</button>
+      <button class="nav-btn" data-view="funnels">Funnels</button>
+      <button class="nav-btn" data-view="leads">Leads</button>
+      <button class="nav-btn" data-view="automation">Automation</button>
+    </nav>
+  </div>
+  <div class="topbar-right">
+    <div class="status-pill live"><span class="pulse"></span> Live</div>
+    <div class="topbar-time" id="clock"></div>
+  </div>
+</header>
+
+<!-- MAIN LAYOUT -->
+<main class="app">
+
+  <!-- DASHBOARD VIEW -->
+  <section class="view view--dashboard active" id="view-dashboard">
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <span class="kpi-label">Total Leads</span>
+        <span class="kpi-value" id="kpi-leads">13,450</span>
+        <span class="kpi-delta up">+407 today</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Completion Rate</span>
+        <span class="kpi-value" id="kpi-completion">66.2%</span>
+        <span class="kpi-delta up">+2.1% vs last week</span>
+      </div>
+      <div class="kpi-card kpi-accent">
+        <span class="kpi-label">Avg Lead Score</span>
+        <span class="kpi-value" id="kpi-avgscore">64</span>
+        <span class="kpi-delta neutral">across all funnels</span>
+      </div>
+      <div class="kpi-card kpi-success">
+        <span class="kpi-label">CRM Sync Rate</span>
+        <span class="kpi-value" id="kpi-sync">97.8%</span>
+        <span class="kpi-delta neutral">2 pending, 1 failed</span>
+      </div>
+    </div>
+
+    <div class="dash-body">
+      <!-- Left: 7-Day Trend Chart -->
+      <div class="panel">
+        <div class="panel-header">
+          <h2>7-Day Funnel Performance</h2>
+          <div class="chart-legend">
+            <span class="legend-item"><span class="legend-dot" style="background:#a855f7"></span> Starts</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#3b82f6"></span> Completions</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#22c55e"></span> Leads</span>
+          </div>
+        </div>
+        <div class="chart-area" id="chart-area"></div>
+      </div>
+
+      <!-- Right column -->
+      <div class="dash-right">
+        <!-- Segment Distribution -->
+        <div class="panel">
+          <div class="panel-header"><h2>Segment Distribution</h2></div>
+          <div id="segment-bars"></div>
+        </div>
+
+        <!-- CRM Sync Log -->
+        <div class="panel">
+          <div class="panel-header"><h2>CRM Sync Log</h2></div>
+          <ul class="sync-log" id="sync-log"></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FUNNELS VIEW -->
+  <section class="view view--funnels" id="view-funnels">
+    <div class="section-header">
+      <h2>Quiz Funnels</h2>
+      <div class="filter-pills">
+        <button class="pill active" data-funnel-filter="all">All</button>
+        <button class="pill" data-funnel-filter="active">Active</button>
+        <button class="pill" data-funnel-filter="paused">Paused</button>
+      </div>
+    </div>
+    <div class="funnels-grid" id="funnels-grid"></div>
+
+    <!-- Funnel Detail Drawer -->
+    <div class="funnel-drawer" id="funnel-drawer">
+      <div class="drawer-overlay" id="drawer-overlay"></div>
+      <div class="drawer-panel" id="drawer-panel">
+        <div class="drawer-header">
+          <h3 id="drawer-title"></h3>
+          <button class="drawer-close" id="drawer-close">&times;</button>
+        </div>
+        <div class="drawer-body" id="drawer-body"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LEADS VIEW -->
+  <section class="view view--leads" id="view-leads">
+    <div class="section-header">
+      <h2>Lead Pipeline</h2>
+      <div class="leads-controls">
+        <div class="filter-pills">
+          <button class="pill active" data-seg-filter="all">All Segments</button>
+        </div>
+        <div class="search-box">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <input type="text" id="lead-search" placeholder="Search leads...">
+        </div>
+      </div>
+    </div>
+    <div class="leads-table-wrap">
+      <table class="leads-table">
+        <thead>
+          <tr>
+            <th>Lead</th>
+            <th>Quiz</th>
+            <th>Score</th>
+            <th>Segment</th>
+            <th>CRM</th>
+            <th>Email Status</th>
+            <th>Completed</th>
+          </tr>
+        </thead>
+        <tbody id="leads-tbody"></tbody>
+      </table>
+    </div>
+
+    <!-- Lead Detail Modal -->
+    <div class="modal-overlay" id="lead-modal">
+      <div class="modal-panel" id="lead-modal-panel"></div>
+    </div>
+  </section>
+
+  <!-- AUTOMATION VIEW -->
+  <section class="view view--automation" id="view-automation">
+    <div class="auto-grid">
+      <!-- Rules -->
+      <div class="panel auto-rules-panel">
+        <div class="panel-header">
+          <h2>Automation Rules</h2>
+          <span class="badge badge-count" id="rules-count"></span>
+        </div>
+        <div class="rules-list" id="rules-list"></div>
+      </div>
+
+      <!-- Email Sequences -->
+      <div class="panel auto-email-panel">
+        <div class="panel-header"><h2>Email Sequences</h2></div>
+        <div class="sequences-list" id="sequences-list"></div>
+      </div>
+    </div>
+
+    <!-- Scoring Matrix -->
+    <div class="panel scoring-panel">
+      <div class="panel-header">
+        <h2>Lead Scoring Matrix</h2>
+        <span class="badge badge-info">Auto-calculated</span>
+      </div>
+      <div class="scoring-grid" id="scoring-grid"></div>
+    </div>
+  </section>
+
+</main>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
